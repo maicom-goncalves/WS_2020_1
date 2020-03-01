@@ -1,11 +1,11 @@
 {
   "name": "aquecimento",
   "version": "1.0.0",
-  "description": "Aquecimento da  disciplina xeb servixes",
+  "description": "Aquecimento da disciplina Web Services",
   "main": "src/server.js",
   "scripts": {
-    "start": "node/src/server.js",
-    "dev":"nodemon"
+    "start": "node src/server.js",
+    "dev": "nodemon"
   },
   "keywords": [],
   "author": "",
