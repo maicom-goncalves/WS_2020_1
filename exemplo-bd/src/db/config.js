@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const URI_DB = process.env.MONGODB_URI || 'mongodb://localhost/agenda';
+const URI_DB = process.env.+ || 'mongodb://localhost/agenda';
 
 mongoose
 .connect(URI_DB,{ userNewUrlParser : true})
