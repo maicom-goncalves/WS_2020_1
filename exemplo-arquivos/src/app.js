@@ -16,5 +16,6 @@ app.use(logger('dev'));
 app.use(FileUpload());
 
 app.use('/upload', require('./routes/upload'));
+app.use('/dowload', require('./routes/dowload'));
 
 module.exports=app;

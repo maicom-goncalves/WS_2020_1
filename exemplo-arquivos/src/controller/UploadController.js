@@ -1,35 +1,34 @@
 const fs = require('fs');
 
-const controller ={
-	realizarUpload: (req,res) =>{
-	
-		const { name,size,mimetype } = req.files['arquivo'];
+const controller = {
 
-		// Cria o nome do arquivo temporário
-		const nomeArquivo = `${new Date().getTime()}`;
-		console.log(nomeArquivo);
-		//Cria o arquivo temporário
-		fs.writeFileSync(nomeArquivo, data);
-		//Cria o stream de leitura do arquivo
-		const readStream = fs.createReadStream(nomeArquivo);
+    realizarUpload: (req, res) =>{
+        const { name,mimetype, data} = req.files['arquivo'];
+        
+        //res.json(resposta);
+        // cria o nome do arquivo temporario
+        const nomeArquivo = `${new Date().getTime()}`; 
+        console.log(nomeArquivo);
 
-		//Realiza a gravação do arquivo no banco de dados
-		const Arquivo = require('../models/Arquivo');
-		const metadados ={ filename: name, contentType: mimetype};
-		Arquivo.write(metadados, readStream, (erro,arquivo) =>{
-			fs.unlinkSync(nomeArquivo);
-			if (erro){
-				console.log(erro);
-				res.status(500).json({
-					erro: 'Erro ao tentar salvar o arquivo'
-				})
-			} else {
-				res.status(201).json({ mensagem: 'Arquivo salvo', id: arquivo_id});
-			}
-			
-		});
+        //cria o arquivo temporario
+        fs.writeFileSync(nomeArquivo, data);
+        //cria a stream de leitura do arquivo temporario
+        const readStream = fs.createReadStream(nomeArquivo);
 
-	}
+
+        //realiza a gravação do arquivo no bd
+        const Arquivo = require('../models/Arquivo');
+        const metadados = {filename: name, contentType: mimetype};
+        Arquivo.write(metadados, readStream, (erro, arquivo)=>{
+            fs.unlinkSync(nomeArquivo);
+            if(erro){
+                console.log(erro);
+                res.status(500).json({erro: 'Erro ao tentar salvar o arquivo'});
+            } else{
+                res.status(201).json({mensagem: 'arquvo foi salvo', id: arquivo._id })
+            }  
+        });    
+    }
 };
 
-module.exports = controller;
+module.exports = controller; 
