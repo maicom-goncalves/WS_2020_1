@@ -16,10 +16,10 @@ const controller = {
                     res.attachment(nomeArquivo);
                     readStream.pipe(res);
                 } else {
-                    res.status(404).json({menssagem : 'Arquivo não encontrado'})
+                    res.status(404).json({menssagem : 'Arquivo não encontrado'});
                 }
             }
-        })
+        });
     },
 
     listarTodosArquivos: (req, res) =>{
@@ -32,7 +32,7 @@ const controller = {
                     return{
                         tamanhoEmBytes: arquivo.length,
                         nome: arquivo.filename,
-                        dataUpload: arquivo.upload,
+                        dataUpload: arquivo.uploadDate,
                         tipo: arquivo.contentType,
                         id: arquivo._id
                     };
