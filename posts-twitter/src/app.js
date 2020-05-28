@@ -1,89 +1,62 @@
 const http = require('http');
+const express = require('express')
 const server = http.createServer();
+//var tw = require('node-tweet-stream')(cfg);
 
-//const io = require('socket.io')(server);
+const io = require('socket.io')(server);
 
-const twitter = new Twit({
-    consumer_key: 'ClkspMmRMOTAJvysssMpylY56',
-    consumer_secret: '34qxajeFKcPTvMocYT5xMdOTZrQohbOAO1btgpRihJuA1tGxlM',
-    access_token: '138086873-jMTpMLwOTPKRRDQ9MnlgUvwIollZTadG3i9ZnRlz',
-    access_token_secret: 'xFdxY1bV2aRaxvy5AJ16i7kCxsVNe6MzThTr5QgJxJzwJ'
+const Twit = require('twit');
+
+var T = new Twit({
+    consumer_key: 'ClkspMmRMOTAJvysssMpylY56', // Copie/cole sua chave aqui 
+    consumer_secret: '34qxajeFKcPTvMocYT5xMdOTZrQohbOAO1btgpRihJuA1tGxlM', // Copie/cole sua chave aqui
+    access_token: '138086873-jMTpMLwOTPKRRDQ9MnlgUvwIollZTadG3i9ZnRlz', // Copie/cole sua chave aqui
+    access_token_secret: 'xFdxY1bV2aRaxvy5AJ16i7kCxsVNe6MzThTr5QgJxJzwJ', // Copie/cole sua chave aqui
+    timeout_ms: 60 * 1000,  //tempo limite opcional da solicitação HTTP para aplicar a todas as solicitações.
+    strictSSL: true,     // opcional - requer que os certificados SSL sejam válidos.
 });
-
-const express = require('express'),
-    app = express(),
-    //hbs = require('express-handlebars'),
-    Twit = require('twit'),
-    io = require('socket.io')(server);
+let stream = T.stream('statuses/filter', { track: 'Maisa' }); //A palavra ou Teg do Twitter entra Aqui!
 
 
-app.get('/', function (req, res) {
-    res.render('home');
+
+function getTweetObject(tweet) {
+  let tweetText = (tweet.extended_tweet) ? tweet.extended_tweet.full_text : tweet.text;
+
+  // verifique se há retweets
+  if (tweet.text.includes('RT @') && tweet.retweeted_status) {
+      tweetText = (tweet.retweeted_status.extended_tweet) ? tweet.retweeted_status.extended_tweet.full_text : tweet.retweeted_status.text;
+  }
+  
+  let TweetObject = {
+      text: tweetText,
+      user: tweet.user.name,
+      location: (tweet.user.location !== null) ? tweet.user.location : '',
+      followers: tweet.user.followers_count,
+      userImage: tweet.user.profile_image_url,
+      timestamp: tweet.timestamp_ms,
+  };
+
+  return TweetObject;
+}
+
+
+let tweet = [];
+
+io.on('connection', socket=> {
+    socket.emit('mostrarTweet', tweet);
+
+  socket.on('tweet', () => {
+      stream.on('novoTweet', mostrarTweet => {
+        tweet.push(mostrarTweet);
+        socket.broadcast.emit('mostrarTweet', tweet);
+
+          let TweetObject = getTweetObject(novoTweet);
+
+          socket.emit('mostrarTweet', TweetObject);
+
+      });   
+  });
 });
-
-//var stream = twitter.stream('statuses/filter', { track: 'nodejs' });
-var stream = T.stream('statuses/filter', { follow: ['nodejs'] })
-
-stream.on('tweet', function (tweet) {
-    console.log(tweet.text)
-})
-
-
-t.on('tweet', function (tweet) {
-    console.log('tweet received', tweet)
-})
-
-t.on('error', function (err) {
-    console.log('Oh no')
-})
-
-socket.on('connect', function (data) {
-    console.log('connected');
-})
-
-socket.on('allTweet', function (tweet) {
-    console.log(tweet);
-    tweetArray = tweet;
-    loopArray();
-});
-
-/*io.on('connection', socket =>{
-    stream.on('tweet', function (tweet) {
-        const data = {
-            'name': tweet.user.name,
-            'screen_name': tweet.user.screen_name,
-            'text': tweet.text,
-            'avatar': tweet.user.profile_image_url
-        };
-
-        socket.emit('tweets', data);
-    });
- 
-});*/
-
-io.on('connection', function (socket) {
-    Twit.get('search/tweets', { q: '#coding', count: 10 }
-        , function (err, data, response) {
-            var tweetArray = [];
-            for (let index = 0; index < data.statuses.length; index++) {
-                const tweet = data.statuses[index];
-                var tweetbody = {
-                    'text': tweet.text,
-                    'userScreenName': "@" + tweet.user.screen_name,
-                    'userImage': tweet.user.profile_image_url_https,
-                    'userDescription': tweet.user.userDescription,
-                }
-                try {
-                    if (tweet.entities.media[0].media_url_https) {
-                        tweetbody['image'] = tweet.entities.media[0].media_url_https;
-                    }
-                } catch (err) { }
-                tweetArray.push(tweetbody);
-            }
-            io.emit('allTweet', tweetArray)
-        })
-})
-
-
+   
 
 module.exports = server;
