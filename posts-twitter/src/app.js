@@ -8,10 +8,10 @@ io.on('connection', socket => {
     
     var Twitter = require('node-tweet-stream')
         socket = new Twitter({
-          consumer_key: '',
-          consumer_secret: '',
-          token: '',
-          token_secret: ''
+          consumer_key: 'h4ImURy6vNuOoMY9AAHy76ou2',
+          consumer_secret: '7NFsfhBmhIjn7mKXLltTbWlhOJtaHwsOeMYrKQux4cJ1pgyvdH',
+          token: '1261730138934435848-tTpR8oh0hxUVzJtESpqPsn2qyj1mvy',
+          token_secret: 'zweFGwoe0fKUC93453WaeXBI3ofJhIBHRj8p6BflY9Y4T'
     })
 
     socket.track('socket.io');

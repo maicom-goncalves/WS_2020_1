@@ -3,10 +3,11 @@
 
 #conteiner {
     padding: 50px 0px;
+    /*background-image: url("dodle3348.jpg");*/
 }
 
 h1 {
-    font-family: 'Raleway', sans-serif;
+    font-family: 'Raleway',serif;
     font-weight: normal;
     text-align: center;
     font-size: 34px;
@@ -28,7 +29,7 @@ h1 {
     padding: 10px;
     margin: 10px 0px;
     box-shadow: 2px 2px 5px #cccccc;
-    background-color: aqua;
+    background-color: #FFEFD5;
 }
 
 
@@ -39,9 +40,10 @@ h1 {
 .tweet img {
     border-radius: 50%;
     margin-right: 5px;
+    box-shadow: 1px 1px 2px #cccccc;
 }
 
 .tweet span {
-    font-family: 'Raleway', sans-serif;
+    font-family: "Times New Roman", Times, serif;
     font-weight: 300;
 }

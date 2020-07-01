@@ -30,5 +30,3 @@ socket.on('tweet',
  
  );
 
-//console.log(texto);
-
